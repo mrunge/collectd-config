@@ -1,5 +1,12 @@
 # collectd plugins
 
+The following overview presents a list of collectd plugins and their
+configuration via TripleO or OSP Director.
+All of these plugins can be included in the list of CollectdExtraPlugins
+as listed in the examples below. These examples can be combined by simply
+adding the plugin to CollectdExtraPlugins and the respective config to
+ExtraConfig.
+
 ## Data collecting plugins
 
 ### ceph
@@ -72,6 +79,7 @@ forward, the other two datasets need a little explanation:
    that may be accumulating.
 * “pending_operations” - shows queue size of pending I/O operations.
 
+The following is an example how to use or configure the disk plugin.
 
     parameter_defaults:
         CollectdExtraPlugins:
@@ -80,7 +88,43 @@ forward, the other two datasets need a little explanation:
             collectd::plugin::disk::disk: "sda"
             collectd::plugin::disk::ignoreselected: false
 
+### interface
+
+    parameter_defaults:
+        CollectdExtraPlugins:
+          - interface
+        ExtraConfig:
+            collectd::plugin::interface:
+
+### load
+
+    parameter_defaults:
+        CollectdExtraPlugins:
+          - load
+        ExtraConfig:
+            collectd::plugin::load:
+### memory
+
+    parameter_defaults:
+        CollectdExtraPlugins:
+          - memory
+        ExtraConfig:
+            collectd::plugin::amqp1:
+### ovs_stats
+
+    parameter_defaults:
+        CollectdExtraPlugins:
+          - ovs_stats
+        ExtraConfig:
+            collectd::plugin::ovs_stats:
+
 ### virt
+
+    parameter_defaults:
+        CollectdExtraPlugins:
+          - virt
+        ExtraConfig:
+            collectd::plugin::virt1:
 
 ## Output plugins
 
@@ -109,3 +153,8 @@ The plugin writes data to an http endpoint.
                     header: foo
 
 For more options, see https://collectd.org/wiki/index.php/Plugin:Write_HTTP
+
+## Miscellaneus plugins
+
+### unix
+
