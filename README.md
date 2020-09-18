@@ -2,6 +2,27 @@
 
 ## Data collecting plugins
 
+### ceph
+
+The ceph plugin gathers extensive data from ceph daemons.
+
+    parameter_defaults:
+        CollectdExtraPlugins:
+          - ceph
+        ExtraConfig:
+            collectd::plugin::ceph::daemons:
+               - "ceph-osd.0"
+               - "ceph-osd.1"
+               - "ceph-osd.2"
+               - "ceph-osd.3"
+               - "ceph-osd.4"
+
+*Note: the osds have to be listed, even if they don't exist on all nodes.*
+
+More info can be found on the 
+[man page](https://collectd.org/documentation/manpages/collectd.conf.5.shtml#plugin_ceph) 
+and on the [collectd wiki](https://collectd.org/wiki/index.php/Plugin:Ceph).
+
 ### cpu
 
 The CPU plugini collects the amount of time spent by the CPU in various
@@ -17,6 +38,17 @@ for IO-operations and being idle.
 More options to be found at https://collectd.org/documentation/manpages/collectd.conf.5.shtml#plugin_cpu
 
 ### df
+
+The DF plugin collects file system usage information, i. e. basically 
+how much space on a mounted partition is used and how much is available. 
+It's named after and very similar to the df(1) UNIX command that's been around 
+forever. 
+
+    parameter_defaults:
+        CollectdExtraPlugins:
+          - df
+        ExtraConfig:
+            collectd::plugin::df::FStype: "ext4"
 
 ### interface
 
