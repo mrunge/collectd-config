@@ -54,6 +54,32 @@ forever.
 
 ### disk
 
+The Disk plugin collects performance statistics of hard-disks and, where 
+supported, partitions. While the “octets” and “operations” are quite straight 
+forward, the other two datasets need a little explanation:
+
+* “merged” are the number of operations, that could be merged into other,
+   already queued operations, i. e. one physical disk access served two 
+   or more logical operations. Of course, the higher that number, the better.
+
+* “time” is the average time an I/O-operation took to complete. Since this is
+  a little messy to calculate take the actual values with a grain of salt.
+
+* “io_time” - time spent doing I/Os (ms). You can treat this metric as a 
+   device load percentage (Value of 1 sec time spent matches 100% of load).
+
+* “weighted_io_time” - measure of both I/O completion time and the backlog 
+   that may be accumulating.
+* “pending_operations” - shows queue size of pending I/O operations.
+
+
+    parameter_defaults:
+        CollectdExtraPlugins:
+          - disk
+        ExtraConfig:
+            collectd::plugin::disk::disk: "sda"
+            collectd::plugin::disk::ignoreselected: false
+
 ### virt
 
 ## Output plugins
