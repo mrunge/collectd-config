@@ -32,9 +32,30 @@ and on the [collectd wiki](https://collectd.org/wiki/index.php/Plugin:Ceph).
 
 ### cpu
 
-The CPU plugini collects the amount of time spent by the CPU in various
+The CPU plugin collects the amount of time spent by the CPU in various
 states, most notably executing user code, executing system code, waiting
 for IO-operations and being idle.
+
+*The CPU plugin does not collect percentages. It collects “jiffies”, 
+the units of scheduling. On many Linux systems there are circa 100 
+jiffies in one second, but this does not mean you will end up with 
+a percentage. Depending on system load, hardware, whether or not the
+system is virtualized and possibly half a dozen other factors there
+may be more or less than 100 jiffies in one second. There is absolutely
+no guarantee that all states add up to 100, an absolute must for
+percentages.*
+
+Name | Description| Comment
+-----|------------|--------
+idle | Amount of idle | collectd_cpu_total{...,type_instance='idle'}
+interrupt | cpu blocked by interrupts | collectd_cpu_total{...,type_instance='interrupt'}
+nice | amount of time running low priority processes | collectd_cpu_total{...,type_instance='nice'}
+softirq | amount of cycles spent in servicing interrupt requests | collectd_cpu_total{...,type_instance='waitirq'}
+steal | Steal time is the percentage of time a virtual CPU waits for a real CPU while the hypervisor is servicing another virtual processor. | collectd_cpu_total{...,type_instance='steal'}
+system | amount spent on system level (kernel)| collectd_cpu_total{...,type_instance='system'}
+user | jiffies used by user processes | collectd_cpu_total{...,type_instance='user'}
+wait | cpu waiting on outstanding I/O request | collectd_cpu_total{...,type_instance='wait'}
+
 
     parameter_defaults:
         CollectdExtraPlugins:
@@ -50,6 +71,12 @@ The DF plugin collects file system usage information, i. e. basically
 how much space on a mounted partition is used and how much is available. 
 It's named after and very similar to the df(1) UNIX command that's been around 
 forever. 
+
+Name | Description| Comment
+-----|------------|--------
+free | amount of free space | collectd_df_df_complex{..., type_instance="free"}
+reserved | reserved disk space | collectd_df_df_complex{..., type_instance="reserved"}
+used | used disk space| collectd_df_df_complex{..., type_instance="used"}
 
     parameter_defaults:
         CollectdExtraPlugins:
@@ -98,6 +125,18 @@ The following is an example how to use or configure the disk plugin.
 
 ### load
 
+The load plugin collects the system load and gives a rough
+overview on the system utilization.
+
+The system load is defined as the number of runnable tasks in
+the run-queue.
+
+Name | Description
+-----|------------
+load_longterm | average system load over the past 15 minues
+load_midterm | average system load over the past 5 minutes
+load_shortterm | average system load over the last minute
+
     parameter_defaults:
         CollectdExtraPlugins:
           - load
@@ -140,7 +179,7 @@ the plugin writes values to an amqp1 message bus, such as qpid.
 
 ### write_http
 
-The plugin writes data to an http endpoint.
+The plugin writes data to an HTTP endpoint.
 
     parameter_defaults:
         CollectdExtraPlugins:
