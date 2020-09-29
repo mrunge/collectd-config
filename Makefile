@@ -16,4 +16,4 @@ all: $(DOC).html $(DOC).pdf
 	pdflatex $<
 
 clean:
-	rm -f $(DOC).pdf $(DOC).tex $(DOC).html $(DOC).aux $(DOC).log
+	rm -f $(DOC).pdf $(DOC).tex $(DOC).html $(DOC).aux $(DOC).log texput.log

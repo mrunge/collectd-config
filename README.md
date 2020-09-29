@@ -7,6 +7,57 @@ as listed in the examples below. These examples can be combined by simply
 adding the plugin to CollectdExtraPlugins and the respective config to
 ExtraConfig.
 
+## Global options
+
+### CollectInternalStats *(false|true)*
+
+When set to true, various statistics about the collectd daemon will be 
+collected, with "collectd" as the plugin name. Defaults to false. 
+
+### Interval *seconds*
+Configures the interval in which to query the read plugins. Obviously smaller 
+values lead to a higher system load produced by collectd, while higher values
+lead to more coarse statistics.
+
+
+### WriteQueueLimitHigh *num*
+### WriteQueueLimitLow *num*
+
+Metrics are read by the read threads and then put into a queue to be handled
+by the write threads. If one of the write plugins is slow (e.g. network
+timeouts, I/O saturation of the disk) this queue will grow. In order to
+avoid running into memory issues in such a case, you can limit the size of
+this queue.
+
+By default, there is no limit and memory may grow indefinitely. This is most
+likely not an issue for clients, i.e. instances that only handle the local
+metrics. For servers it is recommended to set this to a non-zero value, though.
+
+You can set the limits using WriteQueueLimitHigh and WriteQueueLimitLow. 
+Each of them takes a numerical argument which is the number of metrics in
+the queue. If there are HighNum metrics in the queue, any new metrics will
+be dropped. If there are less than LowNum metrics in the queue, all new
+metrics will be enqueued. If the number of metrics currently in the
+queue is between LowNum and HighNum, the metric is dropped with a probability
+that is proportional to the number of metrics in the queue (i.e. it increases
+linearly until it reaches 100%.)
+
+If WriteQueueLimitHigh is set to non-zero and WriteQueueLimitLow is unset, 
+the latter will default to half of WriteQueueLimitHigh.
+
+If you do not want to randomly drop values when the queue size is between
+LowNum and HighNum, set WriteQueueLimitHigh and WriteQueueLimitLow to the
+same value.
+
+Enabling the CollectInternalStats option is of great help to figure out 
+the values to set WriteQueueLimitHigh and WriteQueueLimitLow to.
+
+    parameter_defaults:
+        ExtraConfig:
+          collectd::write_queue_limit_high: 100
+          collectd::write_queue_limit_low: 100
+
+
 ## Data collecting plugins
 
 ### ceph
@@ -92,19 +143,13 @@ The Disk plugin collects performance statistics of hard-disks and, where
 supported, partitions. While the “octets” and “operations” are quite straight 
 forward, the other two datasets need a little explanation:
 
-* “merged” are the number of operations, that could be merged into other,
-   already queued operations, i. e. one physical disk access served two 
-   or more logical operations. Of course, the higher that number, the better.
-
-* “time” is the average time an I/O-operation took to complete. Since this is
-  a little messy to calculate take the actual values with a grain of salt.
-
-* “io_time” - time spent doing I/Os (ms). You can treat this metric as a 
-   device load percentage (Value of 1 sec time spent matches 100% of load).
-
-* “weighted_io_time” - measure of both I/O completion time and the backlog 
-   that may be accumulating.
-* “pending_operations” - shows queue size of pending I/O operations.
+Name | Description
+-----|------------
+merged | are the number of operations, that could be merged into other, already queued operations, i. e. one physical disk access served two or more logical operations. Of course, the higher that number, the better.
+time | is the average time an I/O-operation took to complete. Since this is a little messy to calculate take the actual values with a grain of salt.
+io_time | time spent doing I/Os (ms). You can treat this metric as a device load percentage (Value of 1 sec time spent matches 100% of load).
+weighted_io_time | measure of both I/O completion time and the backlog that may be accumulating.
+pending_operations | shows queue size of pending I/O operations.
 
 The following is an example how to use or configure the disk plugin.
 
@@ -179,7 +224,9 @@ the plugin writes values to an amqp1 message bus, such as qpid.
 
 ### write_http
 
-The plugin writes data to an HTTP endpoint.
+This output plugin submits values to an HTTP 
+server using POST requests and encoding metrics 
+with JSON or using the PUTVAL command.
 
     parameter_defaults:
         CollectdExtraPlugins:
@@ -192,6 +239,22 @@ The plugin writes data to an HTTP endpoint.
                     header: foo
 
 For more options, see https://collectd.org/wiki/index.php/Plugin:Write_HTTP
+
+### write_kafka
+
+This write plugin sends values to a Kafka topic.
+
+    parameter_defaults:
+        CollectdExtraPlugins:
+           - write_kafka
+        ExtraConfig:
+          collectd::plugin::write_kafka::kafka_hosts:
+            - nodeA
+            - nodeB
+          collectd::plugin::write_kafka::topics:
+            some_events:
+              format: JSON
+
 
 ## Miscellaneus plugins
 
