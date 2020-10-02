@@ -96,6 +96,9 @@ may be more or less than 100 jiffies in one second. There is absolutely
 no guarantee that all states add up to 100, an absolute must for
 percentages.*
 
+
+The following values are reported by the CPU plugin:
+
 Name | Description| Comment
 -----|------------|--------
 idle | Amount of idle | collectd_cpu_total{...,type_instance='idle'}
@@ -123,6 +126,8 @@ how much space on a mounted partition is used and how much is available.
 It's named after and very similar to the df(1) UNIX command that's been around 
 forever. 
 
+The following values are reported by the df plugin:
+
 Name | Description| Comment
 -----|------------|--------
 free | amount of free space | collectd_df_df_complex{..., type_instance="free"}
@@ -135,13 +140,11 @@ used | used disk space| collectd_df_df_complex{..., type_instance="used"}
         ExtraConfig:
             collectd::plugin::df::FStype: "ext4"
 
-### interface
-
 ### disk
 
-The Disk plugin collects performance statistics of hard-disks and, where 
-supported, partitions. While the “octets” and “operations” are quite straight 
-forward, the other two datasets need a little explanation:
+The Disk plugin collects performance statistics of hard-disks and, where
+supported, partitions. While the “octets” and “operations” are quite
+straight forward, the other two datasets need a little explanation:
 
 Name | Description
 -----|------------
@@ -192,23 +195,51 @@ load_shortterm | average system load over the last minute
     parameter_defaults:
         CollectdExtraPlugins:
           - memory
-        ExtraConfig:
-            collectd::plugin::amqp1:
+
 ### ovs_stats
+
+Open vSwitch, sometimes abbreviated as OvS, is a production-quality
+open-source implementation of a distributed virtual multi-layer switch.
+The main purpose of Open vSwitch is to provide a switching stack for
+hardware virtualisation environments, while supporting multiple protocols
+and standards used in computer networks.
+
+The ovs_stats plugin collects statistics of OVS connected interfaces.
+This plugin uses OVSDB management protocol (RFC7047) monitor mechanism
+to get statistics from OVSDB.
 
     parameter_defaults:
         CollectdExtraPlugins:
           - ovs_stats
         ExtraConfig:
-            collectd::plugin::ovs_stats:
+            collectd::plugin::ovs_stats::socket: '/run/openvswitch/db.sock'
+
+### pmu
+
+The intel_pmu plugin collects information provided by Linux perf
+interface which provides rich generalized abstractions over hardware
+specific capabilities. All events are reported on a per core basis.
+
+Performance counters are CPU hardware registers that count hardware
+events such as instructions executed, cache-misses suffered, or branches
+mispredicted. They form a basis for profiling applications to trace
+dynamic control flow and identify hotspots.
+
+### processes
+
+
 
 ### virt
+
+This plugin allows CPU, disk, network load and other metrics to be
+collected for virtualized guests on the machine.
 
     parameter_defaults:
         CollectdExtraPlugins:
           - virt
         ExtraConfig:
-            collectd::plugin::virt1:
+            collectd::plugin::virt:hostname_format: "hostname"
+            collectd::plugin::virt:extra_stats: "cpu_util disk vcpu"
 
 ## Output plugins
 
@@ -220,12 +251,12 @@ the plugin writes values to an amqp1 message bus, such as qpid.
         CollectdExtraPlugins:
           - amqp1
         ExtraConfig:
-            collectd::plugin::amqp1:
+            collectd::plugin::amqp1::send_queue_limit: 50
 
 ### write_http
 
-This output plugin submits values to an HTTP 
-server using POST requests and encoding metrics 
+This output plugin submits values to an HTTP
+server using POST requests and encoding metrics
 with JSON or using the PUTVAL command.
 
     parameter_defaults:
@@ -254,7 +285,6 @@ This write plugin sends values to a Kafka topic.
           collectd::plugin::write_kafka::topics:
             some_events:
               format: JSON
-
 
 ## Miscellaneus plugins
 
