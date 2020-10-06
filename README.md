@@ -11,11 +11,11 @@ ExtraConfig.
 
 ### CollectInternalStats *(false|true)*
 
-When set to true, various statistics about the collectd daemon will be 
-collected, with "collectd" as the plugin name. Defaults to false. 
+When set to true, various statistics about the collectd daemon will be
+collected, with "collectd" as the plugin name. Defaults to false.
 
 ### Interval *seconds*
-Configures the interval in which to query the read plugins. Obviously smaller 
+Configures the interval in which to query the read plugins. Obviously smaller
 values lead to a higher system load produced by collectd, while higher values
 lead to more coarse statistics.
 
@@ -33,7 +33,7 @@ By default, there is no limit and memory may grow indefinitely. This is most
 likely not an issue for clients, i.e. instances that only handle the local
 metrics. For servers it is recommended to set this to a non-zero value, though.
 
-You can set the limits using WriteQueueLimitHigh and WriteQueueLimitLow. 
+You can set the limits using WriteQueueLimitHigh and WriteQueueLimitLow.
 Each of them takes a numerical argument which is the number of metrics in
 the queue. If there are HighNum metrics in the queue, any new metrics will
 be dropped. If there are less than LowNum metrics in the queue, all new
@@ -42,14 +42,14 @@ queue is between LowNum and HighNum, the metric is dropped with a probability
 that is proportional to the number of metrics in the queue (i.e. it increases
 linearly until it reaches 100%.)
 
-If WriteQueueLimitHigh is set to non-zero and WriteQueueLimitLow is unset, 
+If WriteQueueLimitHigh is set to non-zero and WriteQueueLimitLow is unset,
 the latter will default to half of WriteQueueLimitHigh.
 
 If you do not want to randomly drop values when the queue size is between
 LowNum and HighNum, set WriteQueueLimitHigh and WriteQueueLimitLow to the
 same value.
 
-Enabling the CollectInternalStats option is of great help to figure out 
+Enabling the CollectInternalStats option is of great help to figure out
 the values to set WriteQueueLimitHigh and WriteQueueLimitLow to.
 
     parameter_defaults:
@@ -77,8 +77,8 @@ The ceph plugin gathers extensive data from ceph daemons.
 
 *Note: the osds have to be listed, even if they don't exist on all nodes.*
 
-More info can be found on the 
-[man page](https://collectd.org/documentation/manpages/collectd.conf.5.shtml#plugin_ceph) 
+More info can be found on the
+[man page](https://collectd.org/documentation/manpages/collectd.conf.5.shtml#plugin_ceph)
 and on the [collectd wiki](https://collectd.org/wiki/index.php/Plugin:Ceph).
 
 ### cpu
@@ -87,9 +87,9 @@ The CPU plugin collects the amount of time spent by the CPU in various
 states, most notably executing user code, executing system code, waiting
 for IO-operations and being idle.
 
-*The CPU plugin does not collect percentages. It collects “jiffies”, 
-the units of scheduling. On many Linux systems there are circa 100 
-jiffies in one second, but this does not mean you will end up with 
+*The CPU plugin does not collect percentages. It collects “jiffies”,
+the units of scheduling. On many Linux systems there are circa 100
+jiffies in one second, but this does not mean you will end up with
 a percentage. Depending on system load, hardware, whether or not the
 system is virtualized and possibly half a dozen other factors there
 may be more or less than 100 jiffies in one second. There is absolutely
@@ -121,10 +121,10 @@ More options to be found at https://collectd.org/documentation/manpages/collectd
 
 ### df
 
-The DF plugin collects file system usage information, i. e. basically 
-how much space on a mounted partition is used and how much is available. 
-It's named after and very similar to the df(1) UNIX command that's been around 
-forever. 
+The DF plugin collects file system usage information, i. e. basically
+how much space on a mounted partition is used and how much is available.
+It's named after and very similar to the df(1) UNIX command that's been around
+forever.
 
 The following values are reported by the df plugin:
 
@@ -227,7 +227,10 @@ dynamic control flow and identify hotspots.
 
 ### processes
 
+### sysevent
 
+The sysevent plugin monitors rsyslog messages, filters for log
+messages and creates events when a defined filter was triggered.
 
 ### virt
 
