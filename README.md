@@ -65,8 +65,6 @@ the values to set WriteQueueLimitHigh and WriteQueueLimitLow to.
 The ceph plugin gathers extensive data from ceph daemons.
 
     parameter_defaults:
-        CollectdExtraPlugins:
-          - ceph
         ExtraConfig:
             collectd::plugin::ceph::daemons:
                - "ceph-osd.0"
@@ -76,6 +74,10 @@ The ceph plugin gathers extensive data from ceph daemons.
                - "ceph-osd.4"
 
 *Note: the osds have to be listed, even if they don't exist on all nodes.*
+
+*Note: The ceph plugin will be added automatically on ceph nodes, when collectd
+is deployed. Adding the ceph plugin on ceph nodes to CollectdExtraPlugins will
+result in a deployment failure.
 
 More info can be found on the
 [man page](https://collectd.org/documentation/manpages/collectd.conf.5.shtml#plugin_ceph)
@@ -248,7 +250,7 @@ collected for virtualized guests on the machine.
 
 ### amqp1
 
-the plugin writes values to an amqp1 message bus, such as qpid.
+the plugin writes values to an amqp1 message bus, such as QPID.
 
     parameter_defaults:
         CollectdExtraPlugins:
