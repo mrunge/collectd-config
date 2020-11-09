@@ -67,11 +67,11 @@ The ceph plugin gathers extensive data from ceph daemons.
     parameter_defaults:
         ExtraConfig:
             collectd::plugin::ceph::daemons:
-               - "ceph-osd.0"
-               - "ceph-osd.1"
-               - "ceph-osd.2"
-               - "ceph-osd.3"
-               - "ceph-osd.4"
+               - ceph-osd.0
+               - ceph-osd.1
+               - ceph-osd.2
+               - ceph-osd.3
+               - ceph-osd.4
 
 *Note: the osds have to be listed, even if they don't exist on all nodes.*
 
