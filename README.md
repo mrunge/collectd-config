@@ -7,6 +7,11 @@ as listed in the examples below. These examples can be combined by simply
 adding the plugin to CollectdExtraPlugins and the respective config to
 ExtraConfig.
 
+To disable a plugin for a group, such as generally disable the default plugin 'cpu', use something like the following:
+
+    ExtraConfig:
+      collectd::plugin::cpu::ensure: absent
+
 ## Global options
 
 ### CollectInternalStats *(false|true)*
@@ -56,6 +61,7 @@ the values to set WriteQueueLimitHigh and WriteQueueLimitLow to.
         ExtraConfig:
           collectd::write_queue_limit_high: 100
           collectd::write_queue_limit_low: 100
+
 
 
 ## Data collecting plugins
@@ -244,6 +250,7 @@ collected for virtualized guests on the machine.
           - virt
         ExtraConfig:
             collectd::plugin::virt:hostname_format: "hostname"
+            collectd::plugin::virt:plugin_instance_format: "uuid"
             collectd::plugin::virt:extra_stats: "cpu_util disk vcpu"
 
 ## Output plugins
